@@ -9,6 +9,7 @@ const { HttpsProxyAgent } = require('https-proxy-agent');
 const saveImageFromUrl = require('../saveImageFromUrl');
 const extractBaseURL = require('../../../../utils/extractBaseURL');
 const { DALLE3_SYSTEM_PROMPT, DALLE_REVERSE_PROXY, PROXY } = process.env;
+const { AZURE_OPENAI_API_VERSION, DALLE_AZURE_API_VERSION } = process.env;
 class DALLE3 extends Tool {
   constructor(fields = {}) {
     super();
@@ -21,6 +22,13 @@ class DALLE3 extends Tool {
 
     if (PROXY) {
       config.httpAgent = new HttpsProxyAgent(PROXY);
+    }
+    // example:
+    // DALLE_REVERSE_PROXY=https://xxx.openai.azure.com/openai/deployments/dall-e-3
+
+    if (DALLE_REVERSE_PROXY.includes('openai.azure.com/')) {
+      config.defaultQuery = { 'api-version': DALLE_AZURE_API_VERSION || AZURE_OPENAI_API_VERSION };
+      config.defaultHeaders = { 'api-key': apiKey };
     }
 
     this.openai = new OpenAI(config);
@@ -122,7 +130,10 @@ Error Message: ${error.message}`;
 
     const regex = /img-[\w\d]+.png/;
     const match = theImageUrl.match(regex);
-    let imageName = '1.png';
+    // In the case of DALL·E on Azure OpenAI,
+    // if the filename does not match, it will result in a fixed value,
+    // causing the second image to not display and always showing the first image.
+    let imageName = 'tmp.' + Math.random() + '.png';
 
     if (match) {
       imageName = match[0];
