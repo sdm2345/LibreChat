@@ -71,6 +71,11 @@ const resetPasswordController = async (req, res) => {
 const refreshController = async (req, res) => {
   const refreshToken = req.headers.cookie ? cookies.parse(req.headers.cookie).refreshToken : null;
   if (!refreshToken) {
+    if (req.user) {
+      const token = await setAuthTokens(req.user._id, res);
+      const userObj = req.user.toJSON();
+      return res.status(200).send({ token, user: userObj });
+    }
     return res.status(200).send('Refresh token not provided');
   }
 

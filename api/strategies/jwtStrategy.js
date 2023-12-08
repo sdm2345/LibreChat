@@ -38,7 +38,7 @@ async function secretOrKeyProvider(request, rawJwtToken, done) {
   }
 }
 
-const { AUTO_CREATE_USER } = process.env ?? {};
+const { AUTH_BY_GATEWAY_JWT } = process.env ?? {};
 // JWT strategy
 const jwtLogin = async () =>
   new JwtStrategy(
@@ -54,7 +54,7 @@ const jwtLogin = async () =>
         if (user) {
           done(null, user);
         } else {
-          if (AUTO_CREATE_USER) {
+          if (AUTH_BY_GATEWAY_JWT) {
             let email = payload.email || '';
             let username = email.split('@')[0] || '';
             let user = new User({
