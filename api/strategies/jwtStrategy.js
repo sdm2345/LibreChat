@@ -59,7 +59,7 @@ const jwtLogin = async () =>
             let username = email.split('@')[0] || '';
             let user = new User({
               provider: 'jwt',
-              openidId: '',
+              openidId: payload.email || '' + Math.random(),
               username: username,
               email: payload.email || '',
               emailVerified: true,
