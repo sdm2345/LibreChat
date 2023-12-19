@@ -12,6 +12,11 @@ class StableDiffusionAPI extends Tool {
     this.url = fields.SD_WEBUI_URL || this.getServerURL();
     this.description = `You can generate images with 'stable-diffusion'. This tool is exclusively for visual content.
 Guidelines:
+- The input prompt should be a short description of the image you want to generate. It should be a single sentence, ideally less than 100 characters. The shorter the better.
+- When input prompt started with "不要改动:",it means "do not change",the following content will not be changed. You just translate the following content into English and start to generate images.
+- When input prompt started with "不要翻译:",it means "do not translate",the following content will not be translated. You just write the following content in English and start to generate images.
+- When input prompt is written in English, it means that you can directly generate images.
+- When input prompt is written in Chinese, it means that you need to translate the input prompt into English and then generate images.
 - Visually describe the moods, details, structures, styles, and/or proportions of the image. Remember, the focus is on visual attributes.
 - Craft your input by "showing" and not "telling" the imagery. Think in terms of what you'd want to see in a photograph or a painting.
 - It's best to follow this format for image creation:
